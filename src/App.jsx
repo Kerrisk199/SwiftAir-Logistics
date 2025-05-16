@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import planeBackground from "./assets/full-plane-bg.jpg";
+import logo from "./assets/swiftair-logo.png"; // Logo import
 
 function App() {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -30,6 +31,12 @@ function App() {
         backgroundImage: `url(${planeBackground})`,
       }}
     >
+      {/* Logo Section */}
+      <div className="logo-container">
+        <img src={logo} alt="SwiftAir Logo" className="logo" />
+      </div>
+
+      {/* Main Overlay Section */}
       <div className="overlay">
         <h1>SwiftAir Logistics Company</h1>
         <p>Track your shipment instantly</p>

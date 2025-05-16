@@ -44,6 +44,7 @@ body, html, #root {
 h1 {
   margin-bottom: 0.5rem;
   color: #000;
+  font-size: 1.8rem;
 }
 
 p {
@@ -72,4 +73,44 @@ p {
   margin-top: 1rem;
   text-align: left;
   color: #000;
+}
+
+/* Logo styles */
+.logo-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.logo {
+  width: 140px;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .overlay {
+    max-width: 95%;
+    padding: 1.5rem;
+    margin-top: 5vh;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .tracker input,
+  .tracker button {
+    font-size: 0.9rem;
+    padding: 0.4rem;
+  }
+
+  .tracking-result {
+    font-size: 0.9rem;
+  }
+
+  .logo {
+    width: 110px;
+  }
 }
