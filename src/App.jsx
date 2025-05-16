@@ -3,155 +3,124 @@
 import React, { useState } from "react";
 import "./App.css";
 import planeBackground from "./assets/full-plane-bg.jpg";
-import logo from "./assets/swiftair-logo.png";
+import logo from "./assets/swiftair-logo.png"; // Logo import
 
 function App() {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [trackingInfo, setTrackingInfo] = useState(null);
-  const [language, setLanguage] = useState("en"); // Language toggle
-
-  const translations = {
-    en: {
-      title: "SwiftAir Logistics Company",
-      subtitle: "Track your shipment instantly",
-      placeholder: "Enter tracking number",
-      button: "Track",
-      error: "Tracking number not found.",
-      inquiries: "For more inquiries and help:",
-      contact: "Please contact our delivery agent on QQ with QQ number:",
-      agentId: "(QQID: 4580Anton)",
-    },
-    zh: {
-      title: "迅捷航空物流公司",
-      subtitle: "立即追踪您的货物",
-      placeholder: "输入追踪号码",
-      button: "追踪",
-      error: "未找到追踪号码。",
-      inquiries: "如需更多咨询与帮助：",
-      contact: "请联系我们的送货代理，QQ号：",
-      agentId: "（QQ号：4580Anton）",
-    },
-  };
-
-  const t = translations[language];
-
-  const trackingData = {
-    ABC123: {
-      status: "Waiting For Customs Clearance",
-      location: "Beijing, China",
-      destination: "Hebei City, Yunnan",
-      estimatedDelivery: "2025-05-14",
-    },
-    XYZ789: {
-      status: "In Transit",
-      location: "Shanghai, China",
-      destination: "Lagos, Nigeria",
-      estimatedDelivery: "2025-05-18",
-    },
-    QWE456: {
-      status: "Delivered",
-      location: "Abuja, Nigeria",
-      destination: "Port Harcourt, Nigeria",
-      estimatedDelivery: "2025-05-10",
-    },
-    LMN321: {
-      status: "Departed Origin",
-      location: "Nanjing, China",
-      destination: "Accra, Ghana",
-      estimatedDelivery: "2025-05-17",
-    },
-    RTY987: {
-      status: "Arrived at Sorting Center",
-      location: "Guangzhou, China",
-      destination: "Nairobi, Kenya",
-      estimatedDelivery: "2025-05-19",
-    },
-    DEF654: {
-      status: "Shipment Delayed",
-      location: "Wuhan, China",
-      destination: "Cairo, Egypt",
-      estimatedDelivery: "2025-05-21",
-    },
-    GHI159: {
-      status: "Awaiting Pickup",
-      location: "Shenzhen, China",
-      destination: "Addis Ababa, Ethiopia",
-      estimatedDelivery: "2025-05-20",
-    },
-    JKL753: {
-      status: "In Customs",
-      location: "Chengdu, China",
-      destination: "Lusaka, Zambia",
-      estimatedDelivery: "2025-05-23",
-    },
-    MNO258: {
-      status: "Shipment Accepted",
-      location: "Tianjin, China",
-      destination: "Harare, Zimbabwe",
-      estimatedDelivery: "2025-05-22",
-    },
-    PQR147: {
-      status: "Processing Order",
-      location: "Hangzhou, China",
-      destination: "Kigali, Rwanda",
-      estimatedDelivery: "2025-05-24",
-    },
-  };
+  const [language, setLanguage] = useState("en"); // "en" or "cn"
 
   const handleTrack = () => {
-    const info = trackingData[trackingNumber.toUpperCase()];
-    if (info) {
-      setTrackingInfo(info);
-    } else {
-      setTrackingInfo({ error: t.error });
+    if (trackingNumber.toUpperCase() === "ABC123") {
+      setTrackingInfo({
+        status: {
+          en: "Waiting For Customs Clearance",
+          cn: "等待海关清关",
+        },
+        location: {
+          en: "Beijing, China",
+          cn: "中国北京",
+        },
+        destination: {
+          en: "Hebei City, Yunnan",
+          cn: "云南省河北市",
+        },
+        estimatedDelivery: "2025-05-14",
+        inquiries: {
+          en:
+            "For more inquiries and help, please contact our delivery agent on QQ with QQ number: 3940893022 (QQID: 4580Anton)",
+          cn: "如需更多查询和帮助，请联系QQ号：3940893022（QQID: 4580Anton）的派送代理",
+        },
+      });
+    } else if (trackingNumber.toUpperCase() === "XYZ789") {
+      setTrackingInfo({
+        status: {
+          en: "In Transit",
+          cn: "运输中",
+        },
+        location: {
+          en: "Shanghai, China",
+          cn: "中国上海",
+        },
+        destination: {
+          en: "Guangzhou, China",
+          cn: "中国广州",
+        },
+        estimatedDelivery: "2025-05-20",
+        inquiries: {
+          en:
+            "For more inquiries and help, please contact our delivery agent on QQ with QQ number: 3940893022 (QQID: 4580Anton)",
+          cn: "如需更多查询和帮助，请联系QQ号：3940893022（QQID: 4580Anton）的派送代理",
+        },
+      });
+    }
+    // Add more tracking codes below as needed, up to 10
+    else {
+      setTrackingInfo({
+        error: {
+          en: "Tracking number not found.",
+          cn: "未找到追踪号码。",
+        },
+      });
     }
   };
 
   const toggleLanguage = () => {
-    setLanguage((prevLang) => (prevLang === "en" ? "zh" : "en"));
+    setLanguage(language === "en" ? "cn" : "en");
   };
 
   return (
     <div
       className="app"
-      style={{ backgroundImage: `url(${planeBackground})` }}
+      style={{
+        backgroundImage: `url(${planeBackground})`,
+      }}
     >
       <div className="logo-container">
         <img src={logo} alt="SwiftAir Logo" className="logo" />
       </div>
 
       <div className="overlay">
-        <button className="lang-toggle" onClick={toggleLanguage}>
-          {language === "en" ? "中文" : "English"}
+        <button className="language-toggle" onClick={toggleLanguage}>
+          {language === "en" ? "切换到中文" : "Switch to English"}
         </button>
 
-        <h1>{t.title}</h1>
-        <p>{t.subtitle}</p>
+        <h1>SwiftAir Logistics Company</h1>
+        <p>{language === "en" ? "Track your shipment instantly" : "即时追踪您的货件"}</p>
 
         <div className="tracker">
           <input
             type="text"
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
-            placeholder={t.placeholder}
+            placeholder={language === "en" ? "Enter tracking number" : "输入追踪号码"}
           />
-          <button onClick={handleTrack}>{t.button}</button>
+          <button onClick={handleTrack}>{language === "en" ? "Track" : "追踪"}</button>
         </div>
 
         {trackingInfo && (
           <div className="tracking-result">
             {trackingInfo.error ? (
-              <p>{trackingInfo.error}</p>
+              <p>{trackingInfo.error[language]}</p>
             ) : (
               <>
-                <p><strong>Status:</strong> {trackingInfo.status}</p>
-                <p><strong>Location:</strong> {trackingInfo.location}</p>
-                <p><strong>Destination:</strong> {trackingInfo.destination}</p>
-                <p><strong>Estimated Delivery:</strong> {trackingInfo.estimatedDelivery}</p>
                 <p>
-                  <strong>{t.inquiries}</strong><br />
-                  {t.contact} <strong>3940893022</strong> {t.agentId}
+                  <strong>{language === "en" ? "Status:" : "状态："}</strong>{" "}
+                  {trackingInfo.status[language]}
                 </p>
+                <p>
+                  <strong>{language === "en" ? "Location:" : "位置："}</strong>{" "}
+                  {trackingInfo.location[language]}
+                </p>
+                <p>
+                  <strong>{language === "en" ? "Destination:" : "目的地："}</strong>{" "}
+                  {trackingInfo.destination[language]}
+                </p>
+                <p>
+                  <strong>{language === "en" ? "Estimated Delivery:" : "预计送达日期："}</strong>{" "}
+                  {trackingInfo.estimatedDelivery}
+                </p>
+                <p>{trackingInfo.inquiries[language]}</p>
               </>
             )}
           </div>
