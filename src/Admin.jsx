@@ -8,6 +8,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import logo from "./assets/swiftair-logo.png";  // Correct path and filename
 
 function Admin() {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -15,17 +16,10 @@ function Admin() {
   const [location, setLocation] = useState("");
   const [destination, setDestination] = useState("");
   const [estimatedDelivery, setEstimatedDelivery] = useState("");
-
-  // Chinese translations
-  const [statusZh, setStatusZh] = useState("");
-  const [locationZh, setLocationZh] = useState("");
-  const [destinationZh, setDestinationZh] = useState("");
-  const [estimatedDeliveryZh, setEstimatedDeliveryZh] = useState("");
-
   const [trackingList, setTrackingList] = useState([]);
   const [editId, setEditId] = useState(null);
+  const [isTranslated, setIsTranslated] = useState(false);
 
-  // Fetch all tracking docs from Firestore
   const fetchTrackingData = async () => {
     const querySnapshot = await getDocs(collection(db, "tracking"));
     const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -36,7 +30,6 @@ function Admin() {
     fetchTrackingData();
   }, []);
 
-  // Add or update a tracking entry
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!trackingNumber) {
@@ -49,20 +42,14 @@ function Admin() {
       location,
       destination,
       estimatedDelivery,
-      status_zh: statusZh,
-      location_zh: locationZh,
-      destination_zh: destinationZh,
-      estimatedDelivery_zh: estimatedDeliveryZh,
     };
 
     try {
       if (editId) {
-        // Update existing document
         const docRef = doc(db, "tracking", editId);
         await updateDoc(docRef, entry);
         setEditId(null);
       } else {
-        // Add new document with trackingNumber as ID
         const docRef = doc(db, "tracking", trackingNumber);
         await setDoc(docRef, entry);
       }
@@ -71,32 +58,21 @@ function Admin() {
       setLocation("");
       setDestination("");
       setEstimatedDelivery("");
-      setStatusZh("");
-      setLocationZh("");
-      setDestinationZh("");
-      setEstimatedDeliveryZh("");
       fetchTrackingData();
     } catch (error) {
       console.error("Error adding/updating document:", error);
     }
   };
 
-  // Edit an existing entry - populate the form with values
   const handleEdit = (item) => {
     setEditId(item.id);
-    setTrackingNumber(item.id); // id is document ID = trackingNumber
-    setStatus(item.status || "");
-    setLocation(item.location || "");
-    setDestination(item.destination || "");
-    setEstimatedDelivery(item.estimatedDelivery || "");
-
-    setStatusZh(item.status_zh || "");
-    setLocationZh(item.location_zh || "");
-    setDestinationZh(item.destination_zh || "");
-    setEstimatedDeliveryZh(item.estimatedDelivery_zh || "");
+    setTrackingNumber(item.id);
+    setStatus(item.status);
+    setLocation(item.location);
+    setDestination(item.destination);
+    setEstimatedDelivery(item.estimatedDelivery);
   };
 
-  // Delete a tracking entry
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this tracking entry?")) {
       await deleteDoc(doc(db, "tracking", id));
@@ -104,8 +80,50 @@ function Admin() {
     }
   };
 
+  const toggleTranslation = () => {
+    setIsTranslated((prev) => !prev);
+  };
+
   return (
     <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
+      {/* Header with logo left and translator toggle right */}
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px"
+      }}>
+        {/* Logo on left */}
+        <img
+          src={logo}
+          alt="SwiftAir Logo"
+          style={{ height: "40px", cursor: "pointer" }}
+          onClick={() => window.location.reload()}
+        />
+
+        {/* Translator toggle on right */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <label
+            htmlFor="translator-toggle"
+            style={{ marginRight: "8px", color: "#007bff", fontWeight: "600" }}
+          >
+            Translate
+          </label>
+          <input
+            id="translator-toggle"
+            type="checkbox"
+            checked={isTranslated}
+            onChange={toggleTranslation}
+            style={{
+              width: "40px",
+              height: "20px",
+              cursor: "pointer",
+              accentColor: "#007bff"  // Blue color for switch
+            }}
+          />
+        </div>
+      </div>
+
       <h2>Admin Panel - Manage Tracking Info</h2>
       <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
         <input
@@ -114,68 +132,37 @@ function Admin() {
           value={trackingNumber}
           onChange={(e) => setTrackingNumber(e.target.value)}
           required
-          disabled={!!editId} // Disable editing tracking number on update
+          disabled={!!editId}
           style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
         />
         <input
           type="text"
-          placeholder="Status (English)"
+          placeholder="Status"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
           style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
         />
         <input
           type="text"
-          placeholder="Location (English)"
+          placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
         />
         <input
           type="text"
-          placeholder="Destination (English)"
+          placeholder="Destination"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
           style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
         />
         <input
           type="date"
-          placeholder="Estimated Delivery (English)"
+          placeholder="Estimated Delivery"
           value={estimatedDelivery}
           onChange={(e) => setEstimatedDelivery(e.target.value)}
           style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
         />
-
-        {/* Chinese inputs */}
-        <input
-          type="text"
-          placeholder="Status (Chinese)"
-          value={statusZh}
-          onChange={(e) => setStatusZh(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
-        />
-        <input
-          type="text"
-          placeholder="Location (Chinese)"
-          value={locationZh}
-          onChange={(e) => setLocationZh(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
-        />
-        <input
-          type="text"
-          placeholder="Destination (Chinese)"
-          value={destinationZh}
-          onChange={(e) => setDestinationZh(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
-        />
-        <input
-          type="date"
-          placeholder="Estimated Delivery (Chinese)"
-          value={estimatedDeliveryZh}
-          onChange={(e) => setEstimatedDeliveryZh(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
-        />
-
         <button type="submit" style={{ padding: "10px 20px" }}>
           {editId ? "Update Tracking" : "Add Tracking"}
         </button>
@@ -189,10 +176,6 @@ function Admin() {
               setLocation("");
               setDestination("");
               setEstimatedDelivery("");
-              setStatusZh("");
-              setLocationZh("");
-              setDestinationZh("");
-              setEstimatedDeliveryZh("");
             }}
             style={{ marginLeft: "10px", padding: "10px 20px" }}
           >
