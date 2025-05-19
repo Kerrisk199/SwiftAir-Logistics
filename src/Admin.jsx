@@ -8,13 +8,16 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import logo from "./assets/swiftair-logo.png";  // Correct path and filename
+import Header from "./components/Header";
 
 function Admin() {
   const [trackingNumber, setTrackingNumber] = useState("");
   const [status, setStatus] = useState("");
+  const [status_zh, setStatusZh] = useState("");
   const [location, setLocation] = useState("");
+  const [location_zh, setLocationZh] = useState("");
   const [destination, setDestination] = useState("");
+  const [destination_zh, setDestinationZh] = useState("");
   const [estimatedDelivery, setEstimatedDelivery] = useState("");
   const [trackingList, setTrackingList] = useState([]);
   const [editId, setEditId] = useState(null);
@@ -22,7 +25,10 @@ function Admin() {
 
   const fetchTrackingData = async () => {
     const querySnapshot = await getDocs(collection(db, "tracking"));
-    const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     setTrackingList(data);
   };
 
@@ -39,8 +45,11 @@ function Admin() {
 
     const entry = {
       status,
+      status_zh,
       location,
+      location_zh,
       destination,
+      destination_zh,
       estimatedDelivery,
     };
 
@@ -53,10 +62,14 @@ function Admin() {
         const docRef = doc(db, "tracking", trackingNumber);
         await setDoc(docRef, entry);
       }
+
       setTrackingNumber("");
       setStatus("");
+      setStatusZh("");
       setLocation("");
+      setLocationZh("");
       setDestination("");
+      setDestinationZh("");
       setEstimatedDelivery("");
       fetchTrackingData();
     } catch (error) {
@@ -67,10 +80,13 @@ function Admin() {
   const handleEdit = (item) => {
     setEditId(item.id);
     setTrackingNumber(item.id);
-    setStatus(item.status);
-    setLocation(item.location);
-    setDestination(item.destination);
-    setEstimatedDelivery(item.estimatedDelivery);
+    setStatus(item.status || "");
+    setStatusZh(item.status_zh || "");
+    setLocation(item.location || "");
+    setLocationZh(item.location_zh || "");
+    setDestination(item.destination || "");
+    setDestinationZh(item.destination_zh || "");
+    setEstimatedDelivery(item.estimatedDelivery || "");
   };
 
   const handleDelete = async (id) => {
@@ -85,47 +101,12 @@ function Admin() {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
-      {/* Header with logo left and translator toggle right */}
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "20px"
-      }}>
-        {/* Logo on left */}
-        <img
-          src={logo}
-          alt="SwiftAir Logo"
-          style={{ height: "40px", cursor: "pointer" }}
-          onClick={() => window.location.reload()}
-        />
-
-        {/* Translator toggle on right */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <label
-            htmlFor="translator-toggle"
-            style={{ marginRight: "8px", color: "#007bff", fontWeight: "600" }}
-          >
-            Translate
-          </label>
-          <input
-            id="translator-toggle"
-            type="checkbox"
-            checked={isTranslated}
-            onChange={toggleTranslation}
-            style={{
-              width: "40px",
-              height: "20px",
-              cursor: "pointer",
-              accentColor: "#007bff"  // Blue color for switch
-            }}
-          />
-        </div>
-      </div>
+    <div style={{ padding: "20px", maxWidth: "700px", margin: "auto" }}>
+      <Header isTranslated={isTranslated} toggleTranslation={toggleTranslation} />
 
       <h2>Admin Panel - Manage Tracking Info</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
+
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Tracking Number"
@@ -133,36 +114,61 @@ function Admin() {
           onChange={(e) => setTrackingNumber(e.target.value)}
           required
           disabled={!!editId}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
         />
+
         <input
           type="text"
-          placeholder="Status"
+          placeholder="Status (English)"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
         />
         <input
           type="text"
-          placeholder="Location"
+          placeholder="Status (Chinese)"
+          value={status_zh}
+          onChange={(e) => setStatusZh(e.target.value)}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
+        />
+
+        <input
+          type="text"
+          placeholder="Location (English)"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
         />
         <input
           type="text"
-          placeholder="Destination"
+          placeholder="Location (Chinese)"
+          value={location_zh}
+          onChange={(e) => setLocationZh(e.target.value)}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
+        />
+
+        <input
+          type="text"
+          placeholder="Destination (English)"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
         />
         <input
+          type="text"
+          placeholder="Destination (Chinese)"
+          value={destination_zh}
+          onChange={(e) => setDestinationZh(e.target.value)}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
+        />
+
+        <input
           type="date"
-          placeholder="Estimated Delivery"
           value={estimatedDelivery}
           onChange={(e) => setEstimatedDelivery(e.target.value)}
-          style={{ width: "100%", marginBottom: "8px", padding: "8px" }}
+          style={{ width: "100%", marginBottom: "10px", padding: "10px" }}
         />
+
         <button type="submit" style={{ padding: "10px 20px" }}>
           {editId ? "Update Tracking" : "Add Tracking"}
         </button>
@@ -173,8 +179,11 @@ function Admin() {
               setEditId(null);
               setTrackingNumber("");
               setStatus("");
+              setStatusZh("");
               setLocation("");
+              setLocationZh("");
               setDestination("");
+              setDestinationZh("");
               setEstimatedDelivery("");
             }}
             style={{ marginLeft: "10px", padding: "10px 20px" }}
@@ -192,16 +201,10 @@ function Admin() {
           {trackingList.map((item) => (
             <li key={item.id} style={{ marginBottom: "10px" }}>
               <strong>{item.id}</strong> - {item.status} | {item.location}
-              <button
-                onClick={() => handleEdit(item)}
-                style={{ marginLeft: "10px", padding: "2px 8px" }}
-              >
+              <button onClick={() => handleEdit(item)} style={{ marginLeft: "10px" }}>
                 Edit
               </button>
-              <button
-                onClick={() => handleDelete(item.id)}
-                style={{ marginLeft: "5px", padding: "2px 8px", color: "red" }}
-              >
+              <button onClick={() => handleDelete(item.id)} style={{ marginLeft: "10px" }}>
                 Delete
               </button>
             </li>
