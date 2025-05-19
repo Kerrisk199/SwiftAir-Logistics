@@ -1,7 +1,9 @@
 body, html, #root {
   height: 100%;
   margin: 0;
+  padding: 0;
   font-family: Arial, sans-serif;
+  overflow-x: hidden; /* Prevent white space on the right */
 }
 
 .app {
@@ -12,6 +14,7 @@ body, html, #root {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow-x: hidden; /* Prevent background from stretching */
 }
 
 .app::before {
