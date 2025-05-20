@@ -31,7 +31,7 @@ body, html, #root {
 .logo-container {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 30px; /* slightly moved right for symmetry with toggle */
   z-index: 2;
 }
 
@@ -47,15 +47,15 @@ body, html, #root {
   }
 
   .logo-container {
-    top: 10px;
-    left: 10px;
+    top: 20px;
+    left: 30px;
   }
 }
 
 .language-toggle {
   position: absolute;
   top: 20px;
-  right: 30px; /* shifted left from edge */
+  right: 30px; /* shifted left to leave space from right edge */
   z-index: 2;
   background-color: #87CEEB; /* sky blue */
   color: white;
