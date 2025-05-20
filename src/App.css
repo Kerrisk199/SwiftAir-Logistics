@@ -3,7 +3,7 @@ body, html, #root {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  overflow-x: hidden; /* Prevent white space on the right */
+  overflow-x: hidden;
 }
 
 .app {
@@ -14,7 +14,7 @@ body, html, #root {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  overflow-x: hidden; /* Prevent background from stretching */
+  overflow-x: hidden;
 }
 
 .app::before {
@@ -24,40 +24,35 @@ body, html, #root {
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.4); /* dark overlay */
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 0;
 }
 
 .logo-container {
   position: absolute;
   top: 20px;
-  left: 30px; /* slightly moved right for symmetry with toggle */
+  left: 20px;
   z-index: 2;
 }
 
 .logo {
-  width: 160px;
+  width: 240px; /* Restored to the correct size before the last increase */
   height: auto;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 600px) {
   .logo {
-    width: 120px;
-  }
-
-  .logo-container {
-    top: 20px;
-    left: 30px;
+    width: 180px;
   }
 }
 
 .language-toggle {
   position: absolute;
   top: 20px;
-  right: 30px; /* shifted left to leave space from right edge */
+  right: 24px;
   z-index: 2;
-  background-color: #87CEEB; /* sky blue */
+  background-color: #87CEEB;
   color: white;
   border: none;
   padding: 10px 18px;

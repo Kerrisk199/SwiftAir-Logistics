@@ -3,7 +3,7 @@ import "./App.css";
 import planeBackground from "./assets/full-plane-bg.jpg";
 import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
-import Header from "./components/Header"; // Header with logo + language switch
+import Header from "./components/Header"; // Import Header component
 
 function App() {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -25,7 +25,7 @@ function App() {
       location: "Location",
       destination: "Destination",
       estimatedDelivery: "Estimated Delivery",
-      contact: "For more inquiries, contact our agent on QQ: 3940893022 (QQID: 4580Anto)",
+      contact: "For more inquiries, contact our agent on QQ: 3940893022 (QQID: 4580Antonio)",
       notFound: "Tracking number not found.",
     },
     zh: {
@@ -37,7 +37,7 @@ function App() {
       location: "位置",
       destination: "目的地",
       estimatedDelivery: "预计送达",
-      contact: "如需更多咨询，请通过QQ联系我们的代理：3940893022 (QQID: 4580Anto)",
+      contact: "如需更多咨询，请通过QQ联系我们的代理：3940893022 (QQID: 4580Antonio)",
       notFound: "未找到追踪号码。",
     },
   };
@@ -64,7 +64,7 @@ function App() {
         backgroundImage: `url(${planeBackground})`,
       }}
     >
-      {/* Header with logo and language switch */}
+      {/* Use Header component */}
       <Header isTranslated={isTranslated} toggleTranslation={toggleTranslation} />
 
       <div className="overlay">
@@ -89,15 +89,21 @@ function App() {
               <>
                 <p>
                   <strong>{t.status}:</strong>{" "}
-                  {isTranslated ? trackingInfo.status_zh || trackingInfo.status : trackingInfo.status}
+                  {isTranslated
+                    ? trackingInfo.status_zh || trackingInfo.status
+                    : trackingInfo.status}
                 </p>
                 <p>
                   <strong>{t.location}:</strong>{" "}
-                  {isTranslated ? trackingInfo.location_zh || trackingInfo.location : trackingInfo.location}
+                  {isTranslated
+                    ? trackingInfo.location_zh || trackingInfo.location
+                    : trackingInfo.location}
                 </p>
                 <p>
                   <strong>{t.destination}:</strong>{" "}
-                  {isTranslated ? trackingInfo.destination_zh || trackingInfo.destination : trackingInfo.destination}
+                  {isTranslated
+                    ? trackingInfo.destination_zh || trackingInfo.destination
+                    : trackingInfo.destination}
                 </p>
                 <p>
                   <strong>{t.estimatedDelivery}:</strong>{" "}
