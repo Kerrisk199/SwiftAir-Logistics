@@ -45,12 +45,17 @@ body, html, #root {
   .logo {
     width: 120px;
   }
+
+  .logo-container {
+    top: 10px;
+    left: 10px;
+  }
 }
 
 .language-toggle {
   position: absolute;
   top: 20px;
-  right: 20px;
+  right: 30px; /* shifted left from edge */
   z-index: 2;
   background-color: #87CEEB; /* sky blue */
   color: white;
