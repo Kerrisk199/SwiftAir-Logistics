@@ -1,84 +1,59 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./App.css";
+import { getTrackingDetails } from "./firebase";
+import logo from "./assets/swiftair-logo.png";
 import planeBackground from "./assets/full-plane-bg.jpg";
-import { db } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
-import Header from "./components/Header"; // Import Header component
 
 function App() {
+  const { i18n, t } = useTranslation();
   const [trackingNumber, setTrackingNumber] = useState("");
   const [trackingInfo, setTrackingInfo] = useState(null);
-  const [language, setLanguage] = useState("en");
-
-  const isTranslated = language === "zh";
-  const toggleTranslation = () => {
-    setLanguage((prev) => (prev === "en" ? "zh" : "en"));
-  };
-
-  const translations = {
-    en: {
-      title: "SwiftAir Logistics Company",
-      subtitle: "Track your package easily",
-      placeholder: "Enter tracking number",
-      trackButton: "Track",
-      status: "Status",
-      location: "Location",
-      destination: "Destination",
-      estimatedDelivery: "Estimated Delivery",
-      contact: "For more inquiries, contact our agent on QQ: 3940893022 (QQID: 4580Antonio)",
-      notFound: "Tracking number not found.",
-    },
-    zh: {
-      title: "SwiftAir 物流公司",
-      subtitle: "轻松追踪您的包裹",
-      placeholder: "输入追踪号码",
-      trackButton: "查询",
-      status: "状态",
-      location: "位置",
-      destination: "目的地",
-      estimatedDelivery: "预计送达",
-      contact: "如需更多咨询，请通过QQ联系我们的代理：3940893022 (QQID: 4580Antonio)",
-      notFound: "未找到追踪号码。",
-    },
-  };
-
-  const t = translations[language];
+  const [isTranslated, setIsTranslated] = useState(false);
+  const [showImage, setShowImage] = useState(false);
 
   const handleTrack = async () => {
-    if (!trackingNumber) return;
+    const data = await getTrackingDetails(trackingNumber);
+    setTrackingInfo(data);
+  };
 
-    const docRef = doc(db, "tracking", trackingNumber);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      setTrackingInfo(docSnap.data());
-    } else {
-      setTrackingInfo({ error: t.notFound });
-    }
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "en" ? "zh" : "en";
+    i18n.changeLanguage(newLang);
+    setIsTranslated(newLang === "zh");
   };
 
   return (
     <div
       className="app"
-      style={{
-        backgroundImage: `url(${planeBackground})`,
-      }}
+      style={{ backgroundImage: `url(${planeBackground})` }}
     >
-      {/* Use Header component */}
-      <Header isTranslated={isTranslated} toggleTranslation={toggleTranslation} />
+      <div className="header">
+        <img src={logo} alt="Logo" className="logo" />
+        <button onClick={toggleLanguage} className="language-toggle">
+          {i18n.language === "en" ? "切换到中文" : "Switch to English"}
+        </button>
+      </div>
 
-      <div className="overlay">
-        <h1>{t.title}</h1>
-        <p>{t.subtitle}</p>
-
+      <div className="content">
         <div className="tracker">
           <input
             type="text"
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
-            placeholder={t.placeholder}
+            placeholder={t("trackPackagePlaceholder")}
+            style={{
+              backgroundColor: "white",
+              color: "black",
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              width: "100%",
+              maxWidth: "400px",
+              fontSize: "16px"
+            }}
           />
-          <button onClick={handleTrack}>{t.trackButton}</button>
+          <button onClick={handleTrack}>{t("trackPackageButton")}</button>
         </div>
 
         {trackingInfo && (
@@ -88,28 +63,85 @@ function App() {
             ) : (
               <>
                 <p>
-                  <strong>{t.status}:</strong>{" "}
+                  <strong>{t("statusLabel")}:</strong>{" "}
                   {isTranslated
                     ? trackingInfo.status_zh || trackingInfo.status
                     : trackingInfo.status}
                 </p>
                 <p>
-                  <strong>{t.location}:</strong>{" "}
+                  <strong>{t("locationLabel")}:</strong>{" "}
                   {isTranslated
                     ? trackingInfo.location_zh || trackingInfo.location
                     : trackingInfo.location}
                 </p>
                 <p>
-                  <strong>{t.destination}:</strong>{" "}
+                  <strong>{t("destinationLabel")}:</strong>{" "}
                   {isTranslated
                     ? trackingInfo.destination_zh || trackingInfo.destination
                     : trackingInfo.destination}
                 </p>
                 <p>
-                  <strong>{t.estimatedDelivery}:</strong>{" "}
+                  <strong>{t("estimatedDeliveryLabel")}:</strong>{" "}
                   {trackingInfo.estimatedDelivery}
                 </p>
-                <p>{t.contact}</p>
+
+                <button
+                  onClick={() => setShowImage(true)}
+                  style={{
+                    marginTop: "15px",
+                    padding: "10px 20px",
+                    backgroundColor: "#007bff",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {t("viewPackageButton")}
+                </button>
+
+                {showImage && (
+                  <div
+                    onClick={() => setShowImage(false)}
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "rgba(0,0,0,0.7)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      zIndex: 9999,
+                    }}
+                  >
+                    {trackingInfo.imageUrl ? (
+                      <img
+                        src={trackingInfo.imageUrl}
+                        alt="Package"
+                        style={{
+                          maxWidth: "90%",
+                          maxHeight: "90%",
+                          borderRadius: "10px",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          background: "white",
+                          padding: "20px",
+                          borderRadius: "10px",
+                          color: "black",
+                        }}
+                      >
+                        {t("noImageAvailable")}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <p style={{ marginTop: "20px" }}>{t("contactInfo")}</p>
               </>
             )}
           </div>
