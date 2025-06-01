@@ -15,6 +15,10 @@ function App() {
   const handleTrack = async () => {
     const data = await getTrackingDetails(trackingNumber);
     setTrackingInfo(data);
+
+    if (window.smartsupp) {
+      window.smartsupp('call', 'trackEvent', 'trackingNumberEntered', { trackingNumber });
+    }
   };
 
   const toggleLanguage = () => {
